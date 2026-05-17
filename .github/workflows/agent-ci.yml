@@ -1,0 +1,10 @@
+name: Agent CI
+
+on:
+  pull_request:
+    paths:
+      - "agents/**"
+
+jobs:
+  test:
+    uses: ./.github/workflows/_python-reusable.yml

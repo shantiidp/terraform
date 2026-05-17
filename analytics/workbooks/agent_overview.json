@@ -1,0 +1,51 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Agentic AI - Agent Overview Dashboard\nReal-time monitoring of all AI agent activity, approval rates, and performance."
+      },
+      "name": "header"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "customEvents | where name startswith 'agent_action' | extend AgentName = tostring(customDimensions.agent_name) | summarize Actions = count() by AgentName, bin(TimeGenerated, 1h) | render timechart",
+        "size": 0,
+        "title": "Agent Activity Over Time",
+        "timeContext": { "durationMs": 86400000 },
+        "queryType": 0,
+        "visualization": "timechart"
+      },
+      "name": "agent-activity-chart"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "customEvents | where name startswith 'agent_action' | extend Status = tostring(customDimensions.status), AgentName = tostring(customDimensions.agent_name) | summarize Approved = countif(Status == 'approved'), Rejected = countif(Status == 'rejected'), Failed = countif(Status == 'failed') by AgentName | render barchart",
+        "size": 0,
+        "title": "Agent Action Outcomes",
+        "queryType": 0,
+        "visualization": "barchart"
+      },
+      "name": "agent-outcomes"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "customEvents | where name startswith 'agent_action' | extend RiskLevel = tostring(customDimensions.risk_level) | summarize count() by RiskLevel | render piechart",
+        "size": 0,
+        "title": "Actions by Risk Level",
+        "queryType": 0,
+        "visualization": "piechart"
+      },
+      "name": "risk-distribution"
+    }
+  ],
+  "fallbackResourceIds": [],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

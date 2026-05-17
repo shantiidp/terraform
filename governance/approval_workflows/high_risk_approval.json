@@ -1,0 +1,86 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "contentVersion": "1.0.0.0",
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Http",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "agent_name": { "type": "string" },
+              "action_type": { "type": "string" },
+              "resource_id": { "type": "string" },
+              "risk_level": { "type": "string" },
+              "description": { "type": "string" },
+              "correlation_id": { "type": "string" }
+            },
+            "required": ["agent_name", "action_type", "risk_level", "correlation_id"]
+          }
+        }
+      }
+    },
+    "actions": {
+      "Send_approval_email": {
+        "type": "ApiConnectionManaged",
+        "inputs": {
+          "host": { "connection": { "name": "@parameters('$connections')['office365']['connectionId']" } },
+          "method": "post",
+          "path": "/approvalmail/$subscriptions",
+          "body": {
+            "NotificationUrl": "https://placeholder",
+            "Message": {
+              "To": "@parameters('approverEmail')",
+              "Subject": "Agent Action Approval Required - @{triggerBody()?['agent_name']}",
+              "Options": "Approve, Reject",
+              "Body": "Agent @{triggerBody()?['agent_name']} requests approval for: @{triggerBody()?['description']}\n\nRisk Level: @{triggerBody()?['risk_level']}\nAction: @{triggerBody()?['action_type']}\nResource: @{triggerBody()?['resource_id']}"
+            }
+          }
+        },
+        "runAfter": {}
+      },
+      "Condition_approved": {
+        "type": "If",
+        "expression": {
+          "and": [
+            {
+              "equals": [
+                "@body('Send_approval_email')?['SelectedOption']",
+                "Approve"
+              ]
+            }
+          ]
+        },
+        "actions": {
+          "Response_approved": {
+            "type": "Response",
+            "inputs": {
+              "statusCode": 200,
+              "body": { "approved": true, "approver": "@body('Send_approval_email')?['UserEmailAddress']" }
+            }
+          }
+        },
+        "else": {
+          "actions": {
+            "Response_rejected": {
+              "type": "Response",
+              "inputs": {
+                "statusCode": 200,
+                "body": { "approved": false, "approver": "@body('Send_approval_email')?['UserEmailAddress']" }
+              }
+            }
+          }
+        },
+        "runAfter": { "Send_approval_email": ["Succeeded"] }
+      }
+    }
+  },
+  "parameters": {
+    "approverEmail": {
+      "type": "string",
+      "defaultValue": "cloud-ops@company.com"
+    }
+  }
+}

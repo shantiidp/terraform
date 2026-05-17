@@ -1,0 +1,18 @@
+Generate Terraform HCL for the following infrastructure request:
+
+Request: {{$request}}
+
+Context:
+- Provider: azurerm ~> 3.100
+- Naming convention: {resource_abbreviation}-{project_name}-{environment}-{location_short}
+- Required tags: project, environment, managed_by=terraform
+- Location: {{$location}}
+- Environment: {{$environment}}
+
+Generate complete, valid Terraform HCL including:
+1. Resource definitions
+2. Required variables with descriptions
+3. Outputs for key resource attributes
+4. Diagnostic settings where applicable
+
+Return ONLY valid HCL code, no markdown or explanations.

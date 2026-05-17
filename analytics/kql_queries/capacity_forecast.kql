@@ -1,0 +1,10 @@
+// Capacity Utilization Trends
+Perf
+| where ObjectName in ("Processor", "Memory", "LogicalDisk")
+| summarize
+    AvgUtilization = avg(CounterValue),
+    MaxUtilization = max(CounterValue),
+    P95Utilization = percentile(CounterValue, 95)
+    by Computer, ObjectName, CounterName, bin(TimeGenerated, 1h)
+| where AvgUtilization > 70
+| order by AvgUtilization desc

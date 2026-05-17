@@ -1,0 +1,17 @@
+Analyze the following resource utilization data and forecast capacity needs.
+
+Resource Metrics:
+{{$metrics_data}}
+
+Resource Configuration:
+{{$resource_config}}
+
+Forecast Window: {{$forecast_hours}} hours
+
+Provide:
+1. Current utilization assessment (healthy/warning/critical)
+2. Predicted utilization at the end of the forecast window
+3. Confidence level of the prediction
+4. Scaling recommendation (if any)
+5. Estimated cost impact of recommended scaling
+6. Time until capacity threshold is reached (if trending toward limits)

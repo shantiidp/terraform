@@ -1,0 +1,18 @@
+// Incident Mean Time to Resolution (MTTR)
+customEvents
+| where name == "agent_action" and customDimensions.agent_name == "incident_responder"
+| extend AlertId = tostring(customDimensions.alert_id),
+         Phase = tostring(customDimensions.phase),
+         Severity = tostring(customDimensions.severity)
+| summarize
+    StartTime = min(TimeGenerated),
+    EndTime = max(TimeGenerated)
+    by AlertId, Severity
+| extend ResolutionTimeMinutes = datetime_diff('minute', EndTime, StartTime)
+| summarize
+    AvgMTTR = avg(ResolutionTimeMinutes),
+    MedianMTTR = percentile(ResolutionTimeMinutes, 50),
+    P95MTTR = percentile(ResolutionTimeMinutes, 95),
+    IncidentCount = count()
+    by Severity, bin(StartTime, 1d)
+| order by StartTime desc

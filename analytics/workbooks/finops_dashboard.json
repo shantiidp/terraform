@@ -1,0 +1,39 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# FinOps Agent - Cost Optimization Dashboard\nTrack cost savings, recommendations, and optimization progress."
+      },
+      "name": "header"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "customEvents | where customDimensions.agent_name == 'finops' | extend Savings = todouble(customDimensions.estimated_savings) | summarize TotalSavings = sum(Savings) by bin(TimeGenerated, 1d) | render columnchart",
+        "size": 0,
+        "title": "Daily Cost Savings Identified",
+        "timeContext": { "durationMs": 2592000000 },
+        "queryType": 0,
+        "visualization": "columnchart"
+      },
+      "name": "daily-savings"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "customEvents | where customDimensions.agent_name == 'finops' | extend ResourceType = tostring(customDimensions.resource_type), Savings = todouble(customDimensions.estimated_savings) | summarize TotalSavings = sum(Savings), Count = count() by ResourceType | order by TotalSavings desc | render barchart",
+        "size": 0,
+        "title": "Savings by Resource Type",
+        "queryType": 0,
+        "visualization": "barchart"
+      },
+      "name": "savings-by-type"
+    }
+  ],
+  "fallbackResourceIds": [],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

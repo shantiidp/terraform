@@ -1,0 +1,18 @@
+An Azure Monitor alert has fired. Diagnose the issue and recommend remediation.
+
+Alert Details:
+{{$alert_data}}
+
+Recent Logs:
+{{$recent_logs}}
+
+Available Runbooks:
+{{$available_runbooks}}
+
+Provide:
+1. Root cause analysis (what went wrong and why)
+2. Severity assessment (critical/high/medium/low)
+3. Recommended remediation action
+4. Risk level of the proposed action
+5. Whether this can be auto-remediated or requires human approval
+6. If a matching runbook exists, specify which one

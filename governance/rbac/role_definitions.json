@@ -1,0 +1,41 @@
+{
+  "agent_reader": {
+    "name": "AgenticAI Agent Reader",
+    "description": "Read-only access for AI agents to query resources and metrics",
+    "actions": [
+      "Microsoft.Resources/subscriptions/resourceGroups/read",
+      "Microsoft.Resources/subscriptions/resources/read",
+      "Microsoft.Insights/metrics/read",
+      "Microsoft.Insights/logs/read",
+      "Microsoft.CostManagement/query/action",
+      "Microsoft.OperationalInsights/workspaces/query/read"
+    ],
+    "notActions": []
+  },
+  "agent_operator": {
+    "name": "AgenticAI Agent Operator",
+    "description": "Limited write access for approved agent remediation actions",
+    "actions": [
+      "Microsoft.Compute/virtualMachines/read",
+      "Microsoft.Compute/virtualMachines/restart/action",
+      "Microsoft.Compute/virtualMachines/deallocate/action",
+      "Microsoft.Web/sites/restart/action",
+      "Microsoft.Resources/tags/write"
+    ],
+    "notActions": [
+      "Microsoft.Compute/virtualMachines/delete",
+      "Microsoft.Resources/subscriptions/resourceGroups/delete"
+    ]
+  },
+  "agent_security_reader": {
+    "name": "AgenticAI Security Reader",
+    "description": "Security-focused read access for the security agent",
+    "actions": [
+      "Microsoft.Security/*/read",
+      "Microsoft.Network/networkSecurityGroups/read",
+      "Microsoft.Authorization/roleAssignments/read",
+      "Microsoft.Authorization/roleDefinitions/read"
+    ],
+    "notActions": []
+  }
+}

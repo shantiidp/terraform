@@ -1,0 +1,17 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "tags['managed_by']",
+        "equals": "agentic-ai"
+      },
+      {
+        "field": "tags['audit_trail']",
+        "exists": "false"
+      }
+    ]
+  },
+  "then": {
+    "effect": "deny"
+  }
+}

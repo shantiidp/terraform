@@ -1,0 +1,19 @@
+Assess the following security incident and recommend response actions.
+
+Incident Details:
+{{$incident_data}}
+
+Defender Recommendations:
+{{$defender_data}}
+
+RBAC Current State:
+{{$rbac_state}}
+
+Provide:
+1. Threat severity assessment (critical/high/medium/low)
+2. Attack vector analysis
+3. Affected resources and blast radius
+4. Immediate containment actions (if critical)
+5. Remediation recommendations
+6. Whether auto-remediation is safe for each recommendation
+7. Compliance implications

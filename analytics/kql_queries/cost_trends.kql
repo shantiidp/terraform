@@ -1,0 +1,12 @@
+// Cost Trends and Anomalies
+customEvents
+| where name == "agent_action" and customDimensions.agent_name == "finops"
+| extend Savings = todouble(customDimensions.estimated_savings),
+         ResourceName = tostring(customDimensions.resource_name),
+         ActionType = tostring(customDimensions.action_type)
+| summarize
+    TotalSavingsIdentified = sum(Savings),
+    RecommendationCount = count(),
+    AvgSavingsPerAction = avg(Savings)
+    by bin(TimeGenerated, 1d)
+| order by TimeGenerated desc

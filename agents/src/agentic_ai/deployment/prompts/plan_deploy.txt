@@ -1,0 +1,15 @@
+Analyze the deployment context and recommend a deployment strategy.
+
+Pipeline: {{$pipeline_info}}
+Target Environment: {{$target_env}}
+Change Summary: {{$changes}}
+Recent Deployment History: {{$deployment_history}}
+Current Health Metrics: {{$health_metrics}}
+
+Provide:
+1. Recommended deployment strategy (blue-green, canary, rolling, direct)
+2. Risk assessment for this deployment
+3. Pre-deployment checks to verify
+4. Post-deployment health criteria
+5. Rollback trigger conditions
+6. Estimated deployment duration

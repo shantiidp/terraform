@@ -1,0 +1,24 @@
+name: "Phase 4: Production Scale"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infra/phases/04-production/**"
+      - "infra/modules/networking/**"
+  pull_request:
+    paths:
+      - "infra/phases/04-production/**"
+      - "infra/modules/networking/**"
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/_terraform-reusable.yml
+    with:
+      phase_dir: "04-production"
+      environment: "dev"
+      action: ${{ github.ref == 'refs/heads/main' && 'apply' || 'plan' }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

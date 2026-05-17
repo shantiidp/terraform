@@ -1,0 +1,92 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "contentVersion": "1.0.0.0",
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Http",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "agent_name": { "type": "string" },
+              "action_type": { "type": "string" },
+              "estimated_cost_impact": { "type": "number" },
+              "description": { "type": "string" },
+              "correlation_id": { "type": "string" }
+            },
+            "required": ["agent_name", "estimated_cost_impact", "correlation_id"]
+          }
+        }
+      }
+    },
+    "actions": {
+      "Check_threshold": {
+        "type": "If",
+        "expression": {
+          "and": [
+            {
+              "greater": [
+                "@triggerBody()?['estimated_cost_impact']",
+                "@parameters('costThreshold')"
+              ]
+            }
+          ]
+        },
+        "actions": {
+          "Send_cost_approval": {
+            "type": "ApiConnectionManaged",
+            "inputs": {
+              "host": { "connection": { "name": "@parameters('$connections')['office365']['connectionId']" } },
+              "method": "post",
+              "path": "/approvalmail/$subscriptions",
+              "body": {
+                "NotificationUrl": "https://placeholder",
+                "Message": {
+                  "To": "@parameters('financeApproverEmail')",
+                  "Subject": "Cost Approval Required - $@{triggerBody()?['estimated_cost_impact']}",
+                  "Options": "Approve, Reject",
+                  "Body": "Agent @{triggerBody()?['agent_name']} proposes an action with estimated cost impact: $@{triggerBody()?['estimated_cost_impact']}\n\n@{triggerBody()?['description']}"
+                }
+              }
+            }
+          },
+          "Response_after_approval": {
+            "type": "Response",
+            "inputs": {
+              "statusCode": 200,
+              "body": {
+                "approved": "@equals(body('Send_cost_approval')?['SelectedOption'], 'Approve')",
+                "approver": "@body('Send_cost_approval')?['UserEmailAddress']"
+              }
+            },
+            "runAfter": { "Send_cost_approval": ["Succeeded"] }
+          }
+        },
+        "else": {
+          "actions": {
+            "Auto_approve": {
+              "type": "Response",
+              "inputs": {
+                "statusCode": 200,
+                "body": { "approved": true, "auto_approved": true, "reason": "Below cost threshold" }
+              }
+            }
+          }
+        },
+        "runAfter": {}
+      }
+    }
+  },
+  "parameters": {
+    "costThreshold": {
+      "type": "int",
+      "defaultValue": 500
+    },
+    "financeApproverEmail": {
+      "type": "string",
+      "defaultValue": "finance-ops@company.com"
+    }
+  }
+}

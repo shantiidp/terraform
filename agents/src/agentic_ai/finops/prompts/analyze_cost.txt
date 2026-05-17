@@ -1,0 +1,18 @@
+Analyze the following Azure cost data and provide actionable recommendations.
+
+Cost Data:
+{{$cost_data}}
+
+Resource Details:
+{{$resource_details}}
+
+Please provide:
+1. Top 3 cost optimization opportunities with estimated monthly savings
+2. Any cost anomalies detected (unexpected spikes or trends)
+3. Resources that appear idle or significantly underutilized
+4. For each recommendation, specify:
+   - Current monthly cost
+   - Recommended change
+   - Estimated new monthly cost
+   - Risk level (low/medium/high)
+   - Confidence score (0-1)

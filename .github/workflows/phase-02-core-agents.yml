@@ -1,0 +1,38 @@
+name: "Phase 2: Core Agents"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infra/phases/02-core-agents/**"
+      - "agents/src/agentic_ai/finops/**"
+      - "agents/src/agentic_ai/incident_responder/**"
+      - "agents/src/agentic_ai/iac_generator/**"
+      - "agents/function_apps/finops_func/**"
+      - "agents/function_apps/incident_func/**"
+      - "agents/function_apps/iac_generator_func/**"
+  pull_request:
+    paths:
+      - "infra/phases/02-core-agents/**"
+      - "agents/src/agentic_ai/finops/**"
+      - "agents/src/agentic_ai/incident_responder/**"
+      - "agents/src/agentic_ai/iac_generator/**"
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/_terraform-reusable.yml
+    with:
+      phase_dir: "02-core-agents"
+      environment: "dev"
+      action: ${{ github.ref == 'refs/heads/main' && 'apply' || 'plan' }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  agents:
+    uses: ./.github/workflows/_python-reusable.yml
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

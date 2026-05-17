@@ -1,0 +1,15 @@
+// Agent Activity Overview - All agent actions over time
+customEvents
+| where name startswith "agent_action" or name == "Governance decision"
+| extend AgentName = tostring(customDimensions.agent_name),
+         ActionType = tostring(customDimensions.action_type),
+         RiskLevel = tostring(customDimensions.risk_level),
+         Status = tostring(customDimensions.status),
+         CorrelationId = tostring(customDimensions.correlation_id)
+| summarize
+    TotalActions = count(),
+    Approved = countif(Status == "approved"),
+    Rejected = countif(Status == "rejected"),
+    Failed = countif(Status == "failed")
+    by AgentName, bin(TimeGenerated, 1h)
+| order by TimeGenerated desc

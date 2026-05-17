@@ -1,0 +1,12 @@
+// Azure Policy Compliance State Over Time
+AzureActivity
+| where OperationNameValue has "Microsoft.PolicyInsights"
+| extend ComplianceState = tostring(Properties_d.complianceState),
+         PolicyName = tostring(Properties_d.policyDefinitionName),
+         ResourceId = tostring(Properties_d.resourceId)
+| summarize
+    Compliant = countif(ComplianceState == "Compliant"),
+    NonCompliant = countif(ComplianceState == "NonCompliant"),
+    ComplianceRate = round(100.0 * countif(ComplianceState == "Compliant") / count(), 2)
+    by bin(TimeGenerated, 1d)
+| order by TimeGenerated desc

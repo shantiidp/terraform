@@ -1,0 +1,38 @@
+name: "Phase 3: Expand Agents"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infra/phases/03-expand-agents/**"
+      - "agents/src/agentic_ai/security/**"
+      - "agents/src/agentic_ai/deployment/**"
+      - "agents/src/agentic_ai/capacity_planner/**"
+      - "agents/function_apps/security_func/**"
+      - "agents/function_apps/deployment_func/**"
+      - "agents/function_apps/capacity_func/**"
+  pull_request:
+    paths:
+      - "infra/phases/03-expand-agents/**"
+      - "agents/src/agentic_ai/security/**"
+      - "agents/src/agentic_ai/deployment/**"
+      - "agents/src/agentic_ai/capacity_planner/**"
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/_terraform-reusable.yml
+    with:
+      phase_dir: "03-expand-agents"
+      environment: "dev"
+      action: ${{ github.ref == 'refs/heads/main' && 'apply' || 'plan' }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  agents:
+    uses: ./.github/workflows/_python-reusable.yml
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

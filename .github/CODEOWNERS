@@ -1,0 +1,16 @@
+# Default owners
+* @cloud-ai-team
+
+# Infrastructure
+/infra/ @cloud-platform-team
+/governance/ @cloud-security-team
+
+# Agent code
+/agents/ @cloud-ai-team
+/agents/src/agentic_ai/security/ @cloud-security-team
+
+# CI/CD
+/.github/ @cloud-platform-team
+
+# Analytics
+/analytics/ @cloud-ai-team @cloud-platform-team
